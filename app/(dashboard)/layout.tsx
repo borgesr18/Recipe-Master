@@ -23,9 +23,17 @@ export default async function DashboardLayout({
         .single()
 
     if (!profile) {
-        // Handle edge case where auth exists but profile doesn't (shouldn't happen with correct flow)
-        // Maybe redirect to a "finish setup" page
-        return <div>Loading profile...</div>
+        return (
+            <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+                <div className="text-lg font-semibold">Perfil não encontrado.</div>
+                <p className="text-gray-500">Houve um erro ao carregar seus dados.</p>
+                <form action="/auth/signout" method="post">
+                    <button type="submit" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+                        Sair e tentar novamente
+                    </button>
+                </form>
+            </div>
+        )
     }
 
     const navigation = [
@@ -33,7 +41,7 @@ export default async function DashboardLayout({
         { name: 'Insumos', href: '/insumos', icon: Package },
         { name: 'Embalagens', href: '/embalagens', icon: Package }, // Using Package for now, maybe Box
         { name: 'Receitas', href: '/receitas', icon: ChefHat },
-        { name: 'Impressão', href: '/impressao', icon: Printer },
+        { name: 'Modelos de Impressão', href: '/templates-impressao', icon: Printer },
     ]
 
     return (
