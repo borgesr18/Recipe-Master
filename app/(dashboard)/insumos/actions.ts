@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createIngredient(formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -73,7 +73,7 @@ export async function createIngredient(formData: FormData) {
 }
 
 export async function updateIngredient(id: string, formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
@@ -146,7 +146,7 @@ export async function updateIngredient(id: string, formData: FormData) {
 }
 
 export async function deleteIngredient(id: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')

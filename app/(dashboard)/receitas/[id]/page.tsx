@@ -7,7 +7,7 @@ import RecipeCostsTab from '@/components/recipe/recipe-costs-tab'
 import RecipePrintingTab from '@/components/recipe/recipe-printing-tab'
 
 export default async function RecipeDetailPage({ params }: { params: { id: string } }) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null

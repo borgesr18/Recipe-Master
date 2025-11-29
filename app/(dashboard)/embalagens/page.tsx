@@ -7,7 +7,7 @@ import { formatCurrency } from '@/lib/utils'
 import { deletePackaging } from './actions'
 
 export default async function PackagingPage() {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createSubRecipe(recipeId: string, formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')
@@ -38,7 +38,7 @@ export async function createSubRecipe(recipeId: string, formData: FormData) {
 }
 
 export async function updateSubRecipe(recipeId: string, subRecipeId: string, formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')
@@ -70,7 +70,7 @@ export async function updateSubRecipe(recipeId: string, subRecipeId: string, for
 }
 
 export async function addIngredientToSubRecipe(recipeId: string, subRecipeId: string, formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')
@@ -135,7 +135,7 @@ export async function addIngredientToSubRecipe(recipeId: string, subRecipeId: st
 }
 
 export async function removeIngredientFromSubRecipe(recipeId: string, subRecipeId: string, id: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')
@@ -151,14 +151,14 @@ export async function removeIngredientFromSubRecipe(recipeId: string, subRecipeI
 }
 
 async function updateSubRecipeCost(subRecipeId: string, companyId: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { data: ingredients } = await supabase
         .from('sub_recipe_ingredients')
         .select('total_cost')
         .eq('sub_recipe_id', subRecipeId)
 
-    const total = ingredients?.reduce((acc, curr) => acc + (curr.total_cost || 0), 0) || 0
+    const total = ingredients?.reduce((acc: number, curr: { total_cost: number | null }) => acc + (curr.total_cost || 0), 0) || 0
 
     await supabase
         .from('sub_recipes')
@@ -167,14 +167,14 @@ async function updateSubRecipeCost(subRecipeId: string, companyId: string) {
 }
 
 async function updateRecipeCost(recipeId: string, companyId: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { data: subRecipes } = await supabase
         .from('sub_recipes')
         .select('total_cost')
         .eq('recipe_id', recipeId)
 
-    const total = subRecipes?.reduce((acc, curr) => acc + (curr.total_cost || 0), 0) || 0
+    const total = subRecipes?.reduce((acc: number, curr: { total_cost: number | null }) => acc + (curr.total_cost || 0), 0) || 0
 
     // Also get packaging cost if any (not implemented yet fully but placeholder)
 

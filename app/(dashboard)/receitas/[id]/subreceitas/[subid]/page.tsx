@@ -10,7 +10,7 @@ import { formatCurrency } from '@/lib/utils'
 import { addIngredientToSubRecipe, removeIngredientFromSubRecipe } from '@/app/(dashboard)/receitas/[id]/subreceitas/actions'
 
 export default async function EditSubRecipePage({ params }: { params: { id: string, subid: string } }) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null

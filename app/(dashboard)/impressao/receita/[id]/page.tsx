@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { formatCurrency } from '@/lib/utils'
 
 export default async function PrintRecipePage({ params, searchParams }: { params: { id: string }, searchParams: { tipo: string, template?: string, peso_desejado_gramas?: string } }) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null

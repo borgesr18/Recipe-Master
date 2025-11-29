@@ -7,7 +7,7 @@ import { formatCurrency } from '@/lib/utils'
 import { deleteIngredient } from './actions'
 
 export default async function IngredientsPage() {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null

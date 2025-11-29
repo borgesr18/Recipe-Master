@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createPackaging(formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')
@@ -50,7 +50,7 @@ export async function createPackaging(formData: FormData) {
 }
 
 export async function updatePackaging(id: string, formData: FormData) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')
@@ -89,7 +89,7 @@ export async function updatePackaging(id: string, formData: FormData) {
 }
 
 export async function deletePackaging(id: string) {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) throw new Error('Unauthorized')

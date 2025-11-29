@@ -6,7 +6,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { deletePrintTemplate } from './actions'
 
 export default async function PrintTemplatesPage() {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null
