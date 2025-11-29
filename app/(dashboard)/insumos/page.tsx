@@ -1,0 +1,88 @@
+import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
+import { formatCurrency } from '@/lib/utils'
+import { deleteIngredient } from './actions'
+
+export default async function IngredientsPage() {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return null
+
+    const { data: profile } = await supabase.from('profiles').select('company_id').eq('id', user.id).single()
+
+    const { data: ingredients } = await supabase
+        .from('ingredients')
+        .select('*')
+        .eq('company_id', profile?.company_id)
+        .order('name')
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold tracking-tight">Insumos</h1>
+                <Button asChild>
+                    <Link href="/insumos/new">
+                        <Plus className="mr-2 h-4 w-4" /> Novo Insumo
+                    </Link>
+                </Button>
+            </div>
+
+            <div className="rounded-md border bg-white">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Nome</TableHead>
+                            <TableHead>Categoria</TableHead>
+                            <TableHead>Embalagem</TableHead>
+                            <TableHead>Preço</TableHead>
+                            <TableHead>Custo Unit.</TableHead>
+                            <TableHead className="w-[100px]">Ações</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {ingredients?.map((ingredient) => (
+                            <TableRow key={ingredient.id}>
+                                <TableCell className="font-medium">{ingredient.name}</TableCell>
+                                <TableCell>{ingredient.category}</TableCell>
+                                <TableCell>
+                                    {ingredient.quantity_per_package} {ingredient.purchase_unit}
+                                </TableCell>
+                                <TableCell>{formatCurrency(ingredient.package_price)}</TableCell>
+                                <TableCell>
+                                    {ingredient.cost_per_gram && `${formatCurrency(ingredient.cost_per_gram)}/g`}
+                                    {ingredient.cost_per_ml && `${formatCurrency(ingredient.cost_per_ml)}/ml`}
+                                    {ingredient.cost_per_unit && `${formatCurrency(ingredient.cost_per_unit)}/un`}
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex items-center gap-2">
+                                        <Button variant="ghost" size="icon" asChild>
+                                            <Link href={`/insumos/${ingredient.id}`}>
+                                                <Pencil className="h-4 w-4" />
+                                            </Link>
+                                        </Button>
+                                        <form action={deleteIngredient.bind(null, ingredient.id)}>
+                                            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </form>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        {ingredients?.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                                    Nenhum insumo cadastrado.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
+    )
+}
