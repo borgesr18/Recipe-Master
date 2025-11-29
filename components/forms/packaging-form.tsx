@@ -9,9 +9,10 @@ import { createPackaging, updatePackaging } from '@/app/(dashboard)/embalagens/a
 interface PackagingFormProps {
     initialData?: any
     isEditing?: boolean
+    onSuccess?: () => void
 }
 
-export default function PackagingForm({ initialData, isEditing = false }: PackagingFormProps) {
+export default function PackagingForm({ initialData, isEditing = false, onSuccess }: PackagingFormProps) {
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (formData: FormData) => {
@@ -22,6 +23,9 @@ export default function PackagingForm({ initialData, isEditing = false }: Packag
             } else {
                 await createPackaging(formData)
             }
+            if (onSuccess) {
+                onSuccess()
+            }
         } catch (error) {
             console.error(error)
             alert('Error saving packaging')
@@ -31,7 +35,7 @@ export default function PackagingForm({ initialData, isEditing = false }: Packag
     }
 
     return (
-        <form action={handleSubmit} className="space-y-6 max-w-2xl">
+        <form action={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                 <div className="sm:col-span-4">
                     <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -54,11 +58,12 @@ export default function PackagingForm({ initialData, isEditing = false }: Packag
                         Tipo
                     </label>
                     <div className="mt-2">
-                        <Select
+                        <select
                             name="type"
                             id="type"
                             required
                             defaultValue={initialData?.type || 'pote'}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <option value="pote">Pote</option>
                             <option value="bandeja">Bandeja</option>
@@ -66,7 +71,7 @@ export default function PackagingForm({ initialData, isEditing = false }: Packag
                             <option value="saco">Saco</option>
                             <option value="caixa">Caixa</option>
                             <option value="outro">Outro</option>
-                        </Select>
+                        </select>
                     </div>
                 </div>
 
@@ -138,11 +143,8 @@ export default function PackagingForm({ initialData, isEditing = false }: Packag
             </div>
 
             <div className="flex items-center justify-end gap-x-6">
-                <Button type="button" variant="ghost" onClick={() => window.history.back()}>
-                    Cancel
-                </Button>
-                <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save'}
+                <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+                    {loading ? 'Salvando...' : 'Salvar'}
                 </Button>
             </div>
         </form>

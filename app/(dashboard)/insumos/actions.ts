@@ -25,21 +25,30 @@ export async function createIngredient(formData: FormData) {
     const package_price = parseFloat(formData.get('package_price') as string)
     const correction_factor = parseFloat(formData.get('correction_factor') as string) || 1.0
 
+    if (quantity_per_package <= 0) {
+        throw new Error('Quantity must be greater than 0')
+    }
+
     // Calculate costs
     let cost_per_gram = null
     let cost_per_ml = null
     let cost_per_unit = null
 
-    if (purchase_unit === 'kg') {
-        cost_per_gram = package_price / (quantity_per_package * 1000)
-    } else if (purchase_unit === 'g') {
-        cost_per_gram = package_price / quantity_per_package
-    } else if (purchase_unit === 'l') {
-        cost_per_ml = package_price / (quantity_per_package * 1000)
-    } else if (purchase_unit === 'ml') {
-        cost_per_ml = package_price / quantity_per_package
-    } else if (purchase_unit === 'unit') {
-        cost_per_unit = package_price / quantity_per_package
+    try {
+        if (purchase_unit === 'kg') {
+            cost_per_gram = package_price / (quantity_per_package * 1000)
+        } else if (purchase_unit === 'g') {
+            cost_per_gram = package_price / quantity_per_package
+        } else if (purchase_unit === 'l') {
+            cost_per_ml = package_price / (quantity_per_package * 1000)
+        } else if (purchase_unit === 'ml') {
+            cost_per_ml = package_price / quantity_per_package
+        } else if (purchase_unit === 'unit') {
+            cost_per_unit = package_price / quantity_per_package
+        }
+    } catch (e) {
+        console.error('Calculation error:', e)
+        throw new Error('Error calculating costs')
     }
 
     const { data: ingredient, error } = await supabase.from('ingredients').insert({
@@ -69,7 +78,6 @@ export async function createIngredient(formData: FormData) {
     })
 
     revalidatePath('/insumos')
-    redirect('/insumos')
 }
 
 export async function updateIngredient(id: string, formData: FormData) {
@@ -93,21 +101,30 @@ export async function updateIngredient(id: string, formData: FormData) {
     const package_price = parseFloat(formData.get('package_price') as string)
     const correction_factor = parseFloat(formData.get('correction_factor') as string) || 1.0
 
+    if (quantity_per_package <= 0) {
+        throw new Error('Quantity must be greater than 0')
+    }
+
     // Calculate costs
     let cost_per_gram = null
     let cost_per_ml = null
     let cost_per_unit = null
 
-    if (purchase_unit === 'kg') {
-        cost_per_gram = package_price / (quantity_per_package * 1000)
-    } else if (purchase_unit === 'g') {
-        cost_per_gram = package_price / quantity_per_package
-    } else if (purchase_unit === 'l') {
-        cost_per_ml = package_price / (quantity_per_package * 1000)
-    } else if (purchase_unit === 'ml') {
-        cost_per_ml = package_price / quantity_per_package
-    } else if (purchase_unit === 'unit') {
-        cost_per_unit = package_price / quantity_per_package
+    try {
+        if (purchase_unit === 'kg') {
+            cost_per_gram = package_price / (quantity_per_package * 1000)
+        } else if (purchase_unit === 'g') {
+            cost_per_gram = package_price / quantity_per_package
+        } else if (purchase_unit === 'l') {
+            cost_per_ml = package_price / (quantity_per_package * 1000)
+        } else if (purchase_unit === 'ml') {
+            cost_per_ml = package_price / quantity_per_package
+        } else if (purchase_unit === 'unit') {
+            cost_per_unit = package_price / quantity_per_package
+        }
+    } catch (e) {
+        console.error('Calculation error:', e)
+        throw new Error('Error calculating costs')
     }
 
     // Check old price for history
@@ -142,7 +159,6 @@ export async function updateIngredient(id: string, formData: FormData) {
     }
 
     revalidatePath('/insumos')
-    redirect('/insumos')
 }
 
 export async function deleteIngredient(id: string) {

@@ -10,9 +10,10 @@ import { formatCurrency } from '@/lib/utils'
 interface IngredientFormProps {
     initialData?: any
     isEditing?: boolean
+    onSuccess?: () => void
 }
 
-export default function IngredientForm({ initialData, isEditing = false }: IngredientFormProps) {
+export default function IngredientForm({ initialData, isEditing = false, onSuccess }: IngredientFormProps) {
     const [loading, setLoading] = useState(false)
     const [calculatedCost, setCalculatedCost] = useState<string | null>(null)
 
@@ -61,6 +62,9 @@ export default function IngredientForm({ initialData, isEditing = false }: Ingre
             } else {
                 await createIngredient(formData)
             }
+            if (onSuccess) {
+                onSuccess()
+            }
         } catch (error) {
             console.error(error)
             alert('Error saving ingredient')
@@ -70,7 +74,7 @@ export default function IngredientForm({ initialData, isEditing = false }: Ingre
     }
 
     return (
-        <form action={handleSubmit} className="space-y-6 max-w-2xl">
+        <form action={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                 <div className="sm:col-span-4">
                     <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -108,19 +112,20 @@ export default function IngredientForm({ initialData, isEditing = false }: Ingre
                         Unidade de Compra
                     </label>
                     <div className="mt-2">
-                        <Select
+                        <select
                             name="purchase_unit"
                             id="purchase_unit"
                             required
                             value={unit}
                             onChange={(e) => setUnit(e.target.value)}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <option value="kg">Quilograma (kg)</option>
                             <option value="g">Grama (g)</option>
                             <option value="l">Litro (l)</option>
                             <option value="ml">Mililitro (ml)</option>
                             <option value="unit">Unidade (un)</option>
-                        </Select>
+                        </select>
                     </div>
                 </div>
 
@@ -191,11 +196,8 @@ export default function IngredientForm({ initialData, isEditing = false }: Ingre
             )}
 
             <div className="flex items-center justify-end gap-x-6">
-                <Button type="button" variant="ghost" onClick={() => window.history.back()}>
-                    Cancel
-                </Button>
-                <Button type="submit" disabled={loading}>
-                    {loading ? 'Saving...' : 'Save'}
+                <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+                    {loading ? 'Salvando...' : 'Salvar'}
                 </Button>
             </div>
         </form>

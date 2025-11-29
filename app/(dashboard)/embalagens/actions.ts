@@ -21,12 +21,12 @@ export async function createPackaging(formData: FormData) {
     const package_price = parseFloat(formData.get('package_price') as string)
     const quantity_per_package = parseFloat(formData.get('quantity_per_package') as string)
 
+    if (quantity_per_package <= 0) {
+        throw new Error('Quantity must be greater than 0')
+    }
+
     const cost_per_unit = package_price / quantity_per_package
     let cost_per_gram = null
-
-    // Optional: calculate cost per gram if capacity is provided (e.g. for packaging that is part of the weight?)
-    // Usually packaging cost is per unit. The prompt says "custo por grama, quando aplicável".
-    // Maybe for things like plastic wrap? But for now let's stick to unit.
 
     const { error } = await supabase.from('packaging').insert({
         company_id: profile.company_id,
@@ -46,7 +46,6 @@ export async function createPackaging(formData: FormData) {
     }
 
     revalidatePath('/embalagens')
-    redirect('/embalagens')
 }
 
 export async function updatePackaging(id: string, formData: FormData) {
@@ -65,6 +64,10 @@ export async function updatePackaging(id: string, formData: FormData) {
     const capacity_ml = formData.get('capacity_ml') ? parseFloat(formData.get('capacity_ml') as string) : null
     const package_price = parseFloat(formData.get('package_price') as string)
     const quantity_per_package = parseFloat(formData.get('quantity_per_package') as string)
+
+    if (quantity_per_package <= 0) {
+        throw new Error('Quantity must be greater than 0')
+    }
 
     const cost_per_unit = package_price / quantity_per_package
 
@@ -85,7 +88,6 @@ export async function updatePackaging(id: string, formData: FormData) {
     }
 
     revalidatePath('/embalagens')
-    redirect('/embalagens')
 }
 
 export async function deletePackaging(id: string) {
