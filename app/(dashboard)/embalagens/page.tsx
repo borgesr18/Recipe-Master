@@ -47,7 +47,7 @@ export default async function PackagingPage() {
                                 Adicione uma nova embalagem ao seu estoque.
                             </DialogDescription>
                         </DialogHeader>
-                        <PackagingForm action={createPackaging} />
+                        <PackagingForm />
                     </DialogContent>
                 </Dialog>
             </div>
@@ -92,8 +92,8 @@ export default async function PackagingPage() {
                                                     </DialogDescription>
                                                 </DialogHeader>
                                                 <PackagingForm
-                                                    action={updatePackaging.bind(null, item.id)}
-                                                    defaultValues={item}
+                                                    initialData={item}
+                                                    isEditing={true}
                                                 />
                                             </DialogContent>
                                         </Dialog>

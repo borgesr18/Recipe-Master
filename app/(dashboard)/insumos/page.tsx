@@ -45,7 +45,7 @@ export default async function IngredientsPage() {
                                 Adicione um novo ingrediente ao seu estoque.
                             </DialogDescription>
                         </DialogHeader>
-                        <IngredientForm action={createIngredient} />
+                        <IngredientForm />
                     </DialogContent>
                 </Dialog>
             </div>
@@ -92,8 +92,8 @@ export default async function IngredientsPage() {
                                                     </DialogDescription>
                                                 </DialogHeader>
                                                 <IngredientForm
-                                                    action={updateIngredient.bind(null, ingredient.id)}
-                                                    defaultValues={ingredient}
+                                                    initialData={ingredient}
+                                                    isEditing={true}
                                                 />
                                             </DialogContent>
                                         </Dialog>
